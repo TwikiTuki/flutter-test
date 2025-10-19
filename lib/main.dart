@@ -37,7 +37,11 @@ class Layout extends StatelessWidget {
         page = ChangeNotifierProvider(create: (context) => NewEntryPageState(),
           child: NewEntryPage()
         );
-        print("page is counter");
+        print("page is New Entry Page");
+        break;
+      case 2:
+          page = EntriesList();
+        print("Entries List");
         break;
     }
     return LayoutBuilder(builder: (context, constraints) { 
@@ -52,11 +56,15 @@ class Layout extends StatelessWidget {
                 destinations: [
                   NavigationRailDestination(
                     icon: Icon(Icons.home),
-                    label: Text('CounterPage'),
+                    label: Text('Counter Page'),
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.add_box),
-                    label: Text('NewEntry'),
+                    label: Text('New Entry'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.add_box),
+                    label: Text('Etnries List'),
                   ),
                 ],
                 onDestinationSelected: (value) {
@@ -96,6 +104,10 @@ class AppState extends ChangeNotifier {
   int currentPage = 0;
   var history = <String>["sdaf", "fasd", "kokow"];
   var entries = <Entry>[];
+
+  List<Entry> getEntries() {
+    return this.entries;
+  }
 
   void setCurrentPage(int page) {
     this.currentPage = page;
@@ -172,19 +184,57 @@ class Entry {
     this.fat = fat;
     this.carbohydrates = carbohydrates;
   }
+
+  String toString(){
+    return "name: $name proteins: $proteins fat: $fat carbohydrates: $carbohydrates";
+  }
 }
 
 class NewEntryPage extends StatelessWidget {
+  final nameTextConroller = new TextEditingController();
+  final proteinsTextConroller = new TextEditingController();
+  final fatTextConroller = new TextEditingController();
+  final carbohydratesTextConroller = new TextEditingController();
   @override 
   build(BuildContext context) {
     var pageState = context.watch<NewEntryPageState>();
+    var appState = context.watch<AppState>();
+    void onAddButtonPressed() {
+      var entry = new Entry(
+        pageState.name, 
+        pageState.proteins, 
+        pageState.fat, 
+        pageState.carbohydrates, 
+      );
+      pageState.name = "";
+      pageState.proteins = 0;
+      pageState.fat = 0;
+      pageState.carbohydrates = 0;
+      print(entry.toString());
+      appState.addEntry(entry);
+
+      nameTextConroller.clear();
+      proteinsTextConroller.clear();
+      fatTextConroller.clear();
+      carbohydratesTextConroller.clear();
+    };
     return  Column (
       children: [
-        Text("sdaaaaaaaaaaaaf"),
-        Text(pageState.name),
-        NewEntryPageInputField(label: "NAME"),
-        NewEntryPageInputField(label: "PROTEINS"),
+        NewEntryPageInputField(label: "NAME", onChange: (value)=>{pageState.setName(value)}, controller: this.nameTextConroller ,),
+        NewEntryPageInputField(label: "PROTEINS", onChange: (value)=>{pageState.setProteins(int.tryParse(value) ?? 0)}, controller:  this.proteinsTextConroller,),
+        NewEntryPageInputField(label: "FAT", onChange: (value)=>{pageState.setFat(int.tryParse(value) ?? 0)}, controller:  this.fatTextConroller,),
+        NewEntryPageInputField(label: "CARBOHYDRATES", onChange: (value)=>{pageState.setCarbohydrates(int.tryParse(value) ?? 0)}, controller:  this.carbohydratesTextConroller,),
         
+          SizedBox( width:500, 
+          child:Container( color: Colors.orangeAccent, 
+            padding: EdgeInsets.all(30),
+            child: Align( alignment: Alignment.centerRight,
+              child: FloatingActionButton(onPressed: onAddButtonPressed,
+                child: Icon(Icons.add), 
+              ),
+            )
+          ),
+        ),
       ]
     );
   }
@@ -192,9 +242,18 @@ class NewEntryPage extends StatelessWidget {
 
 class NewEntryPageInputField extends StatelessWidget {
   String label = "";
+  void Function(Object) onChange = (val)=>();
+  TextEditingController? controller;
 
-  NewEntryPageInputField({String label = ""}){
+  static void dummyFunc(){}
+
+  NewEntryPageInputField({String label = "", onChange, controller}){
+    if (controller == null) {
+      throw Exception("wololooo");
+    }
     this.label = label;
+    this.onChange = onChange;
+    this.controller = controller;
   }
 
   @override
@@ -217,13 +276,46 @@ class NewEntryPageInputField extends StatelessWidget {
                   filled: true,
                   fillColor: Colors.white70,
                 ),
-                onSubmitted: (value) => pageState.setName(value),
+                onSubmitted:  onChange, //(value) => pageState.setName(value),
+                onChanged:  onChange, //(value) => pageState.setName(value),
+                controller: controller,
               ),
             )
         ])
       ),
     );
   }
+}
+
+class EntriesList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<AppState>();
+    var entries = <Widget>[];
+    appState.addEntry(new Entry("fasd", 9, 9, 9));
+
+    for (Entry entry in appState.getEntries()) {
+      entries.add(Row(children: [
+        Text("name: "),
+        Text(entry.name),
+        SizedBox(width: 10),
+        Text("protein: "),
+        Text(entry.proteins.toString()),
+        SizedBox(width: 10),
+        Text("protein: "),
+        Text("fat: "),
+        Text(entry.fat.toString()),
+        SizedBox(width: 10),
+        Text("protein: "),
+        Text("carbohidrates: "),
+        Text(entry.carbohydrates.toString()),
+      ],));
+    }
+    return Column(
+      children: entries,
+    );
+  }
+
 }
 
 
