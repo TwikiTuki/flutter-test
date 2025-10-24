@@ -1,4 +1,5 @@
 import 'dart:io';
+// import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,371 +13,154 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => AppState(),
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(),
-        home: Layout(),
-      ),
+    return MaterialApp(
+      title: "Nonna",
+      theme: ThemeData(),
+      home: Scaffold(body: HomePage())
     );
   }
 }
 
-class Layout extends StatelessWidget {
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<AppState>();
-    Widget page = CounterPage();
-    switch (appState.currentPage) {
-      case 0:
-        page = CounterPage();
-        print("page is counter");
-        break;
-      case 1:
-        page = ChangeNotifierProvider(create: (context) => NewEntryPageState(),
-          child: NewEntryPage()
-        );
-        print("page is New Entry Page");
-        break;
-      case 2:
-          page = EntriesList();
-        print("Entries List");
-        break;
-    }
-    return LayoutBuilder(builder: (context, constraints) { 
-      return Scaffold(
-        appBar: AppBar(title: const Text('This is a test app')),
-        body:
-          Row(
-            children: [SafeArea(
-              child: NavigationRail(
-                extended: constraints.maxWidth >= 600,
-                selectedIndex: appState.currentPage,
-                destinations: [
-                  NavigationRailDestination(
-                    icon: Icon(Icons.home),
-                    label: Text('Counter Page'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.add_box),
-                    label: Text('New Entry'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.add_box),
-                    label: Text('Etnries List'),
-                  ),
-                ],
-                onDestinationSelected: (value) {
-                  print('selected: $value');
-                  appState.setCurrentPage(value);
-                }
-              ),
-            ),
-            Container(child: page),
-          ]),
-        // Container(child: MyHomePage()),
-        bottomNavigationBar: Text('This is the bottom of the app'),
-      );
-    });
-    throw UnimplementedError();
+    return HomeNav();
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class HomeNav extends StatelessWidget {
+  const HomeNav({super.key});
   @override
   Widget build(BuildContext context) {
-    return Container (
-        padding: EdgeInsets.all(20),
-        color: Colors.redAccent,
-        width: double.infinity,
-        height: double.infinity,
-        child: Column( children: [
-          CounterPage(),
-        ]
-      ),
-    );
-  }
-}
-
-class AppState extends ChangeNotifier {
-  int clicks = 0;
-  int currentPage = 0;
-  var history = <String>["sdaf", "fasd", "kokow"];
-  var entries = <Entry>[];
-
-  List<Entry> getEntries() {
-    return this.entries;
-  }
-
-  void setCurrentPage(int page) {
-    this.currentPage = page;
-    notifyListeners();
-  }
-
-  void incrementClick() {
-    this.clicks += 1;
-    notifyListeners();
-  }
-
-  void historyAdd(String value){
-    history.add(value);
-    notifyListeners();
-  }
-
-  void historyRemove(String value){
-    history.remove(value);
-    notifyListeners();
-  }
-
-  void addEntry(Entry value){
-    entries.add(value);
-    notifyListeners();
-  }
-
-  void removeEntry(Entry value){
-    entries.remove(value);
-    notifyListeners();
-  }
-}
-
-class NewEntryPageState extends ChangeNotifier {
-  String name = "";
-  int proteins = 0;
-  int fat = 0;
-  int carbohydrates = 0;
-
-  String getName() {
-    return this.name;
-  }
-
-  void setName(String value) {
-    this.name = value;
-    notifyListeners();
-  }
-
-  void setProteins(int value) {
-    this.proteins = value;
-    notifyListeners();
-  }
-
-  void setFat(int value) {
-    this.fat = value;
-    notifyListeners();
-  }
-
-  void setCarbohydrates(int value) {
-    this.carbohydrates = value;
-    notifyListeners();
-  }
-
-}
-
-class Entry {
-  String name = "";
-  int proteins = 0;
-  int fat = 0;
-  int carbohydrates = 0;
-
-  Entry(String name, int proteins, int fat, int carbohydrates) {
-    this.name = name;
-    this.proteins = proteins;
-    this.fat = fat;
-    this.carbohydrates = carbohydrates;
-  }
-
-  String toString(){
-    return "name: $name proteins: $proteins fat: $fat carbohydrates: $carbohydrates";
-  }
-}
-
-class NewEntryPage extends StatelessWidget {
-  final nameTextConroller = new TextEditingController();
-  final proteinsTextConroller = new TextEditingController();
-  final fatTextConroller = new TextEditingController();
-  final carbohydratesTextConroller = new TextEditingController();
-  @override 
-  build(BuildContext context) {
-    var pageState = context.watch<NewEntryPageState>();
-    var appState = context.watch<AppState>();
-    void onAddButtonPressed() {
-      var entry = new Entry(
-        pageState.name, 
-        pageState.proteins, 
-        pageState.fat, 
-        pageState.carbohydrates, 
-      );
-      pageState.name = "";
-      pageState.proteins = 0;
-      pageState.fat = 0;
-      pageState.carbohydrates = 0;
-      print(entry.toString());
-      appState.addEntry(entry);
-
-      nameTextConroller.clear();
-      proteinsTextConroller.clear();
-      fatTextConroller.clear();
-      carbohydratesTextConroller.clear();
-    };
-    return  Column (
-      children: [
-        NewEntryPageInputField(label: "NAME", onChange: (value)=>{pageState.setName(value)}, controller: this.nameTextConroller ,),
-        NewEntryPageInputField(label: "PROTEINS", onChange: (value)=>{pageState.setProteins(int.tryParse(value) ?? 0)}, controller:  this.proteinsTextConroller,),
-        NewEntryPageInputField(label: "FAT", onChange: (value)=>{pageState.setFat(int.tryParse(value) ?? 0)}, controller:  this.fatTextConroller,),
-        NewEntryPageInputField(label: "CARBOHYDRATES", onChange: (value)=>{pageState.setCarbohydrates(int.tryParse(value) ?? 0)}, controller:  this.carbohydratesTextConroller,),
-        
-          SizedBox( width:500, 
-          child:Container( color: Colors.orangeAccent, 
-            padding: EdgeInsets.all(30),
-            child: Align( alignment: Alignment.centerRight,
-              child: FloatingActionButton(onPressed: onAddButtonPressed,
-                child: Icon(Icons.add), 
+  return Container(
+          child:  Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundImage: NetworkImage("https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg"),
+                  ),
+                  Text("Nonna"),
+                  Icon(Icons.search)
+                ]
               ),
-            )
+              SizedBox(height: 10,),
+              HomeNavCatergories(categories: ["Sillas", "Mesas", "Lamparas"]),
+              HomeProductsCatalog(),
+            ]
           ),
-        ),
-      ]
-    );
+        );
   }
 }
 
-class NewEntryPageInputField extends StatelessWidget {
-  String label = "";
-  void Function(Object) onChange = (val)=>();
-  TextEditingController? controller;
-
-  static void dummyFunc(){}
-
-  NewEntryPageInputField({String label = "", onChange, controller}){
-    if (controller == null) {
-      throw Exception("wololooo");
+class HomeNavCatergories extends StatelessWidget {
+  final categories = const <String>["Todo", "Sillas", "Mesas", "Lamparas", "Armarios"];
+  const HomeNavCatergories({super.key,  categories});
+  void onPressed(){}
+  @override
+  Widget build(BuildContext context) {
+    var ret = <Widget>[];
+    print("categories:");
+    for (var category in categories) {
+      print(" category: $category");
+      ret.add(OutlinedButton(onPressed: onPressed, child: Text(category)));
     }
-    this.label = label;
-    this.onChange = onChange;
-    this.controller = controller;
+    return SizedBox(height: 20, child: ListView(scrollDirection: Axis.horizontal, padding: EdgeInsets.only(left: 5), children: ret));
   }
+}
+
+class HomeProductsCatalog extends StatelessWidget {
+  final products = const <String>["Todo", "Sillas", "Mesas", "Lamparas", "Armarios"];
+  const HomeProductsCatalog({super.key,  products});
 
   @override
-  Widget build(BuildContext context){
-    var pageState = context.watch<NewEntryPageState>();
-    return SizedBox(
-      width: 500,
-      child: Container( color: Colors.green,
-        padding: EdgeInsets.all(30),
-        child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [ Text(label,
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(width: 10),
-            SizedBox(
-              width: 300,
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.white70,
-                ),
-                onSubmitted:  onChange, //(value) => pageState.setName(value),
-                onChanged:  onChange, //(value) => pageState.setName(value),
-                controller: controller,
-              ),
-            )
-        ])
+  Widget build(BuildContext context) {
+    print(Product.productsList()[0]);
+    print(Product.productsList()[0].toString());
+    return Expanded(
+      child: ListView(
+        children: [
+          HomeProduct(product: Product.productsList()[0]),
+          // HomeProduct(product: Product.productsList()[0]),
+          // HomeProduct(product: Product.productsList()[0]),
+          // HomeProduct(product: Product.productsList()[0]),
+        ],
       ),
     );
   }
 }
 
-class EntriesList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<AppState>();
-    var entries = <Widget>[];
-    appState.addEntry(new Entry("fasd", 9, 9, 9));
+class Product{
+  String image = "";
+  String title = "";
+  double price = 0.0; // TODO would be better to user currency format
+  String description = "";
+  String sticker = "";
 
-    for (Entry entry in appState.getEntries()) {
-      entries.add(Row(children: [
-        Text("name: "),
-        Text(entry.name),
-        SizedBox(width: 10),
-        Text("protein: "),
-        Text(entry.proteins.toString()),
-        SizedBox(width: 10),
-        Text("protein: "),
-        Text("fat: "),
-        Text(entry.fat.toString()),
-        SizedBox(width: 10),
-        Text("protein: "),
-        Text("carbohidrates: "),
-        Text(entry.carbohydrates.toString()),
-      ],));
-    }
-    return Column(
-      children: entries,
-    );
+  Product({image, title, price, description, sticker}) {
+    this.image = image;
+    this.title = title;
+    this.price = price;
+    this.description = description;
+    this.sticker = sticker;
   }
 
+  static Product defaultProduct() {
+    return new Product(
+        title: "Title",
+        image: "https://www.ikea.com/es/es/images/products/adde-silla-blanco__0872092_pe716742_s5.jpg?f=xl",
+        price: -1,
+        description: "description",
+        sticker: "",
+      );
+
+  }
+
+  String toString() {
+    return ("title: $title, image: $image, price: $price, description: $description, sticker: $sticker, ");
+
+  }
+
+  static productsList() {
+    return [
+      new Product(
+        title: "Sillas comedor",
+        image: "https://www.ikea.com/es/es/images/products/adde-silla-blanco__0872092_pe716742_s5.jpg?f=xl",
+        price: 100,
+        description: "Buenas bonitas i baratas. Corre que se acaban",
+        sticker: "",
+      ),
+    ];
+  }
 }
 
+class HomeProduct extends StatelessWidget {
+  Product product = Product.defaultProduct();
+  HomeProduct({product}) {
+    this.product = product;
+  }
 
-
-class CounterPage extends StatelessWidget {
   @override
-  build(BuildContext context) {
-    var appState = context.watch<AppState>();
-    var clicks = appState.clicks;
-    var elements = <Widget>[];
-    final TextEditingController controller = new TextEditingController();
-    for (var elem in appState.history){
-      elements.add(
-        Row (
+  Widget build(BuildContext context) {
+    var price = this.product.price;
+    // return Text("sdaf");
+    return Flex(
+      direction: Axis.vertical,
+      children: [Flexible( flex: 0, fit: FlexFit.loose,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(elem),
-            IconButton(icon: Icon(Icons.delete), onPressed: ()=>{appState.historyRemove(elem)})
-          ]
-        )
-      );
-    }
-    return 
-      Align(
-        alignment: Alignment.topCenter,
-        child:
-        Column( 
-          children: [
-            Column(children:  elements),
-            Row (
-              children: [
-                Text('Hellow you clicked $clicks times'), 
-                IconButton(
-                  icon: Icon(Icons.arrow_circle_down_rounded),
-                  onPressed: () {
-                    print("clicked on increment");
-                    appState.incrementClick();
-                  },
-                ) 
-              ]
-            ),
-            Row (children: [SizedBox(
-              width: 300,
-              child: TextField(
-                controller: controller,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  icon: Icon(Icons.send),
-                  counterText: "wololooo",
-                  filled: true,
-                  fillColor: Colors.blue,
-                  hintText: "woko hint"
-                ),
-                onSubmitted: (String content) async {
-                  appState.historyAdd(content);
-                  controller.clear();
-                  print("You entered $content");
-                }),
-              ),
-            ])
-          ]
+            Row(children: [Expanded(child: Image.network("https://www.ikea.com/es/es/images/products/adde-silla-blanco__0872092_pe716742_s5.jpg?f=xl"))]),    
+            Text("sdaf"),
+            Text("sdaf"),
+            Text("sdaf"),
+            Text("sdaf"),
+          ],
         ),
-      );
+      )],
+    );
   }
 }
