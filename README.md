@@ -1,16 +1,15 @@
-# sdaf
+### TODO
+- DONE learn to add resources
+    - DONE Use apropiate font
+    - DONE Use provided images 
+        - DONE products
+        - DONE banner
+- Navbar
+    - DONE Avoid the device bar to go over my navbar
+    - DONE Add real banner (seed add resources first)
+    - TODO categories buttons color and size
+    - TODO price should be formatted as integer
+        - Use currency format
+- DONE Background color
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- DONE THE PADDING MUST BE GENERAL. I added a padding to the product element but it should be zero and apply the padding to the whole app.
