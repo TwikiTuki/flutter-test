@@ -22,7 +22,7 @@ class Product{
   static Product defaultProduct() {
     return new Product(
         title: "Title",
-        image: "https://www.ikea.com/es/es/images/products/adde-silla-blanco__0872092_pe716742_s5.jpg?f=xl",
+        image: "assets/images/flores.png",
         price: -1.0,
         description: "description",
         sticker: "",

@@ -5,6 +5,9 @@ import 'furniture/home_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '/model/Cart.dart';
+
+
 
 void main() {
   runApp(const MyApp());
@@ -12,9 +15,11 @@ void main() {
 
 class MyAppState extends ChangeNotifier {
   var currentPage = 0;
+  var cart = Cart();
 
   void setCurrentPage(var page) { this.currentPage = page; notifyListeners(); }
   int getCurrentPage() { return this.currentPage; }
+
 }
 
 class MyApp extends StatelessWidget {

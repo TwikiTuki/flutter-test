@@ -199,7 +199,7 @@ class HomeProduct extends StatelessWidget {
       onTap: () {
         Navigator.push(context, MaterialPageRoute<void>(
           builder: (BuildContext context) {
-            return ProductDetails();
+            return ProductDetails(product: product,);
           }
         ));
       },
@@ -215,10 +215,10 @@ class HomeProduct extends StatelessWidget {
               ClipRRect( borderRadius: BorderRadius.circular(30) ,child: Image.asset(fit: BoxFit.cover, this.product.image)),
               // ClipRRect( borderRadius: BorderRadius.circular(30) ,child: Expanded(child: Image.asset(fit: BoxFit.cover, this.product.image)))
             ),   
-            Text(style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.darkGrey, fontFamily: 'Manrope'), "${this.product.title}"),
+            Text(style: productTitleStyle, "${this.product.title}"),
             // Text(style: TextStyle(fontSize: 24, color: const Color.fromARGB(255, 61, 93, 82)), "${this.product.price}€"),
-            Text(style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.greyGreen), "${this.product.price.toInt()}€"),
-            Text(maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.grey), "${this.product.description}"),
+            Text(style: productPriceStyle, "${this.product.price.toInt()}€"),
+            Text(maxLines: 2, overflow: TextOverflow.ellipsis, style: productDescriptionStyle, "${this.product.description}"),
           ],
         ),
       ),
