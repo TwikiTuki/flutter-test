@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
 class  MyMaterialApp extends StatelessWidget {
   MyMaterialApp({super.key});
 
-
   @override 
   Widget build(BuildContext context) {
     var state = context.watch<MyAppState>();
@@ -51,8 +50,6 @@ class  MyMaterialApp extends StatelessWidget {
         throw Exception("INVALID PAGE");
     }
 
-    const selectedIconColor = AppColors.nonnaRed; 
-    const selectedBackgroundColor = Color.fromARGB(255, 233, 233, 222);
     return MaterialApp(
       title: "Nonna",
       theme: ThemeData(),
@@ -60,32 +57,7 @@ class  MyMaterialApp extends StatelessWidget {
         body: page,
         bottomNavigationBar: Container(
           decoration: BoxDecoration(border: Border(top: BorderSide(color: Colors.black),)),
-          child: NavigationBar(
-            backgroundColor: Color.fromARGB(255, 243, 243, 233),
-            indicatorColor: Color.fromARGB(255, 233, 233, 222),
-            onDestinationSelected:  (int index) {
-              print("Selected destination $index");
-              state.setCurrentPage(index);
-            },
-            selectedIndex: state.getCurrentPage(),
-            destinations: [
-              NavigationDestination(
-                selectedIcon: Icon(Icons.home, color: selectedIconColor,),
-                icon: Icon(Icons.home_outlined),
-                label: 'Home',
-              ),
-              NavigationDestination(
-                selectedIcon: Icon(Icons.home, color: selectedIconColor),
-                icon: Icon(Icons.list),
-                label: 'History',
-              ),
-              NavigationDestination(
-                selectedIcon: Icon(Icons.home, color: selectedIconColor),
-                icon: Icon(Icons.shopping_cart_checkout_outlined),
-                label: 'Cart',
-              ),
-            ],
-          ),
+          child: BottomNavBar()
         ),
       )
     );
@@ -98,7 +70,35 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    throw UnimplementedError();
+    var state = context.watch<MyAppState>();
+    const selectedIconColor = AppColors.nonnaRed; 
+    const selectedBackgroundColor = Color.fromARGB(255, 233, 233, 222);
+    return NavigationBar(
+      backgroundColor: Color.fromARGB(255, 243, 243, 233),
+      indicatorColor: Color.fromARGB(255, 233, 233, 222),
+      onDestinationSelected:  (int index) {
+        print("Selected destination $index");
+        state.setCurrentPage(index);
+      },
+      selectedIndex: state.getCurrentPage(),
+      destinations: [
+        NavigationDestination(
+          selectedIcon: Icon(Icons.home, color: selectedIconColor,),
+          icon: Icon(Icons.home_outlined),
+          label: 'Home',
+        ),
+        NavigationDestination(
+          selectedIcon: Icon(Icons.home, color: selectedIconColor),
+          icon: Icon(Icons.list),
+          label: 'History',
+        ),
+        NavigationDestination(
+          selectedIcon: Icon(Icons.home, color: selectedIconColor),
+          icon: Icon(Icons.shopping_cart_checkout_outlined),
+          label: 'Cart',
+        ),
+      ],
+    );
   }
 }
 
