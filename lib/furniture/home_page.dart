@@ -1,7 +1,11 @@
 import 'dart:io';
+import 'package:sdaf/main.dart';
+
 import '/themes/AppColors.dart';
 import '/model/Product.dart';
 import '/model/Category.dart';
+import '/furniture/filter.dart';
+import '/furniture/productDetails.dart';
 // import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
 
 import 'package:flutter/material.dart';
@@ -57,7 +61,7 @@ class HomePage extends StatelessWidget {
             child: Column(
               children: [ 
                 HomeNav(),
-                SizedBox(height: 10,),
+                SizedBox(height: 20,),
                 HomeNavCatergories(categories: Category.ALL),
                 SizedBox(height: 15,),
                 HomeProductsCatalog(),
@@ -82,14 +86,14 @@ class HomeNav extends StatelessWidget {
         // Text("Nonna"),
         Image.asset("assets/images/logo.png", height: 40,),
         GestureDetector(
-          onTap: (){showDialog(
-            barrierColor: Colors.transparent,
-            useSafeArea: true,
-            context: context,
-            builder: (context){ return ProductFilter(); },
-            barrierDismissible: true, // Tap outside to close
-          );},
-          child: Icon(Icons.search, size: 35,)
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return ProductFilter();
+              }
+            ));
+          },
+          child: Icon(Icons.search, size: 35, color: AppColors.grey)
         ),
       ]
     );
@@ -107,7 +111,7 @@ class HomeNavCatergories extends StatelessWidget {
     print("categories:");
     for (var category in categories) {
       var buttonBackground = category == pageState.getCategoryFilter() ? AppColors.darkGrey : Colors.transparent;  
-      var buttonTextColor = category == pageState.getCategoryFilter() ? Colors.white : AppColors.grey;  
+      var buttonTextColor = category == pageState.getCategoryFilter() ? Colors.white : AppColors.darkGrey;  
       void onPressed(){
         pageState.setCategoryFilter(category);
         pageState.setCurrentProducts(Product.filteredProducts(category, ""));
@@ -115,13 +119,14 @@ class HomeNavCatergories extends StatelessWidget {
       print(" category: $category");
       ret.add(
         OutlinedButton( onPressed: (){onPressed();},
-        style: OutlinedButton.styleFrom(side: BorderSide(color: AppColors.grey ), backgroundColor: buttonBackground),
-        child: Text(category, style: TextStyle(color: buttonTextColor)),
+        style: OutlinedButton.styleFrom(side: BorderSide(color: AppColors.darkGrey ), backgroundColor: buttonBackground),
+        child: Text(category, style: TextStyle(fontWeight: FontWeight.bold, color: buttonTextColor)),
       ));
+      
       ret.add(SizedBox(width: 5));
     }
     // return SizedBox(height: 20, child: ListView(scrollDirection: Axis.horizontal, children: ret));
-    return SizedBox(height: 20, child: ListView(scrollDirection: Axis.horizontal, children: ret));
+    return SizedBox(height: 35, child: ListView(scrollDirection: Axis.horizontal, children: ret));
   }
 }
 
@@ -165,6 +170,10 @@ class HomeProductsCatalog extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.only(top: 0),
         children: productsWidgets,
+        // children: [
+          // HomeProduct(product: Product.productsList()[0]),
+          // HomeProduct(product: Product.productsList()[1]),
+        // ]
       ),
     );
   }
@@ -178,88 +187,41 @@ class HomeProduct extends StatelessWidget {
     this.product = product;
   }
 
+          // onTap: (){
+            // Navigator.push(context, MaterialPageRoute<void>(
+              // builder: (BuildContext context) {
+                // return ProductFilter();
+              // }
+// 
   @override
   Widget build(BuildContext context) {
-    var price = this.product.price.toInt();
-    // return Text("sdaf");
-    return Container(
-      decoration: BoxDecoration(border: Border(top: BorderSide(color: AppColors.grey), )), 
-      padding: EdgeInsets.only(top: 15, bottom: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        spacing: 7,
-        children: [
-          SizedBox(height: 300, width: double.infinity, child:
-            ClipRRect( borderRadius: BorderRadius.circular(30) ,child: Image.asset(fit: BoxFit.cover, this.product.image)),
-            // ClipRRect( borderRadius: BorderRadius.circular(30) ,child: Expanded(child: Image.asset(fit: BoxFit.cover, this.product.image)))
-          ),   
-          Text(style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.darkGrey, fontFamily: 'Manrope'), "${this.product.title}"),
-          // Text(style: TextStyle(fontSize: 24, color: const Color.fromARGB(255, 61, 93, 82)), "${this.product.price}€"),
-          Text(style: TextStyle(fontSize: 24, color: AppColors.greyGreen), "${this.product.price.toInt()}€"),
-          Text(maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 16, color: AppColors.grey), "${this.product.description}"),
-        ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return ProductDetails();
+          }
+        ));
+      },
+      child: Container(
+        decoration: BoxDecoration(border: Border(top: BorderSide(color: AppColors.grey), )), 
+        padding: EdgeInsets.only(top: 15, bottom: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          spacing: 7,
+          children: [
+            SizedBox(height: 300, width: double.infinity, child:
+              ClipRRect( borderRadius: BorderRadius.circular(30) ,child: Image.asset(fit: BoxFit.cover, this.product.image)),
+              // ClipRRect( borderRadius: BorderRadius.circular(30) ,child: Expanded(child: Image.asset(fit: BoxFit.cover, this.product.image)))
+            ),   
+            Text(style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.darkGrey, fontFamily: 'Manrope'), "${this.product.title}"),
+            // Text(style: TextStyle(fontSize: 24, color: const Color.fromARGB(255, 61, 93, 82)), "${this.product.price}€"),
+            Text(style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.greyGreen), "${this.product.price.toInt()}€"),
+            Text(maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.grey), "${this.product.description}"),
+          ],
+        ),
       ),
-    );
-  }
-}
-
-class ProductFilter extends StatelessWidget {
-  const ProductFilter({super.key});
-
-  @override 
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => HomePageState(),
-      child: Scaffold(
-        backgroundColor: AppColors.appBackground, // semi-transparent
-        body: Center(
-          child: Container(
-            padding: EdgeInsets.all(15), 
-            child: Column(
-              children: [
-                FilterNavbar(),
-                HomeProductsCatalog(),
-              ]
-            ),
-          ),
-        ),
-      )
-    );
-  }
-}
-
-class FilterNavbar extends StatelessWidget {
-  const FilterNavbar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final pageState = context.watch<HomePageState>();
-    return Container(
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.grey, width:2), )), 
-      child: Row(
-        children: [
-
-        GestureDetector(
-          onTap: (){Navigator.of(context).pop();},
-          child: Icon(Icons.arrow_back, color: AppColors.grey),
-        ),
-        SizedBox(width: 20),
-        Expanded(child: TextField(
-          onChanged: (value) {
-            pageState.setWordFilter(value);
-            pageState.setCurrentProducts(Product.filteredProducts(pageState.categoryFilter, pageState.wordFilter));
-          },
-          cursorColor: AppColors.grey,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            errorBorder: InputBorder.none,
-            disabledBorder: InputBorder.none,
-          )
-        )),
-      ]),
     );
   }
 }
