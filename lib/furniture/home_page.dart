@@ -5,7 +5,7 @@ import '/themes/AppColors.dart';
 import '/model/Product.dart';
 import '/model/Category.dart';
 import '/furniture/filter.dart';
-import '/furniture/productDetails.dart';
+import 'product_details.dart';
 // import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
 
 import 'package:flutter/material.dart';
@@ -73,7 +73,8 @@ class HomePage extends StatelessWidget {
 }
 
 class HomeNav extends StatelessWidget {
-  const HomeNav({super.key});
+  var search = true;
+  HomeNav({super.key, search});
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -85,7 +86,7 @@ class HomeNav extends StatelessWidget {
         ),
         // Text("Nonna"),
         Image.asset("assets/images/logo.png", height: 40,),
-        GestureDetector(
+        !search ? SizedBox(width: 35) : GestureDetector(
           onTap: (){
             Navigator.push(context, MaterialPageRoute<void>(
               builder: (BuildContext context) {

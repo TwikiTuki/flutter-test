@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'themes/AppColors.dart';
 import 'furniture/home_page.dart';
+import 'cart/cart_page.dart';
 // import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
 
 import 'package:flutter/material.dart';
@@ -35,12 +36,12 @@ class MyApp extends StatelessWidget {
 }
 
 class  MyMaterialApp extends StatelessWidget {
-  MyMaterialApp({super.key});
+  const MyMaterialApp({super.key});
 
   @override 
   Widget build(BuildContext context) {
     var state = context.watch<MyAppState>();
-    var page;
+    Widget page;
 
     switch(state.getCurrentPage()) {
       case (0):
@@ -116,12 +117,12 @@ class HistoryPage extends StatelessWidget {
     return(Text("HISTORY PAGE"));
   }
 }
-
-class CartPage extends StatelessWidget {
-  const CartPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return(Text("CART PAGE"));
-  }
-}
+// 
+// class CartPage extends StatelessWidget {
+  // const CartPage({super.key});
+// 
+  // @override
+  // Widget build(BuildContext context) {
+    // return(Text("CART PAGE"));
+  // }
+// }
